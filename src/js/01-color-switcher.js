@@ -20,3 +20,31 @@ function getRandomHexColor() {
   return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 } */
 
+const refs = {
+    startButton : document.querySelector('button[data-start]'),
+    stopButton : document.querySelector('button[data-stop]'),
+}
+
+function getRandomHexColor() {
+    return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+  }
+
+  refs.stopButton.setAttribute('disabled', true);
+  let counter;
+
+const startHandler = (event) => {
+    counter = setInterval(() => {
+        document.body.style.backgroundColor = getRandomHexColor();
+      }, 1000);
+      refs.startButton.setAttribute('disabled', true);
+      refs.stopButton.removeAttribute('disabled');
+}
+
+const stopHandler = (event) => {
+    refs.startButton.removeAttribute('disabled');
+    refs.stopButton.setAttribute('disabled', true);
+    clearInterval(counter);
+}
+
+ refs.startButton.addEventListener('click',startHandler);
+ refs.stopButton.addEventListener('click',stopHandler);
