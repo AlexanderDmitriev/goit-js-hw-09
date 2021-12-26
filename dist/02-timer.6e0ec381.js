@@ -2681,10 +2681,17 @@ warning Следующий функционал не обязателен при
 Для отображения уведомлений пользователю вместо window.alert() используй библиотеку notiflix. */
 // Описан в документации
 // Дополнительный импорт стилей
+//////////////////      Инициализация         ///////////////////////
 const refs = {
-  startButton: document.querySelector('button[data-start]')
+  startButton: document.querySelector('button[data-start]'),
+  dataDays: document.querySelector('span[data-days]'),
+  dataHours: document.querySelector('span[data-hours]'),
+  dataMinutes: document.querySelector('span[data-minutes]'),
+  dataSeconds: document.querySelector('span[data-seconds]')
 };
-let xx;
+let selectedDatesCounter;
+let operationsFlag = false;
+let unformattingDate;
 const options = {
   enableTime: true,
   time_24hr: true,
@@ -2692,26 +2699,67 @@ const options = {
   minuteIncrement: 1,
 
   onClose(selectedDates) {
-    const dateNow = new Date();
-    console.log(selectedDates[0] - dateNow);
-    xx = selectedDates[0];
+    if (!operationsFlag) {
+      const dateNow = new Date();
+      console.log(selectedDates[0] - dateNow);
+      selectedDatesCounter = selectedDates[0];
 
-    if (selectedDates[0] - dateNow < 0) {
-      window.alert("Please choose a date in the future");
-      refs.startButton.setAttribute('disabled', true);
-    } else {
-      refs.startButton.removeAttribute('disabled');
+      if (selectedDates[0] - dateNow < 0) {
+        window.alert("Please choose a date in the future");
+        refs.startButton.setAttribute('disabled', true);
+      } else {
+        refs.startButton.removeAttribute('disabled');
+      }
     }
   }
 
 };
-const x = (0, _flatpickr.default)("#datetime-picker", options);
+const flatpickrObject = (0, _flatpickr.default)("#datetime-picker", options); //////////////////////      Методы      /////////////////////////////
 
-const startButtonHandler = event => {
-  setInterval(() => {
-    console.log(xx - Date.now());
+const timerStarter = () => {
+  const timerId = setInterval(() => {
+    unformattingDate = selectedDatesCounter - Date.now();
+    console.log(convertMs(unformattingDate));
+    refs.dataDays.textContent = convertMs(unformattingDate).days;
+    refs.dataHours.textContent = convertMs(unformattingDate).hours;
+    refs.dataMinutes.textContent = convertMs(unformattingDate).minutes;
+    refs.dataSeconds.textContent = convertMs(unformattingDate).seconds;
   }, 1000);
 };
+
+const startButtonHandler = event => {
+  if (!operationsFlag) {
+    operationsFlag = true;
+    timerStarter();
+    refs.startButton.setAttribute('disabled', true);
+  } else {
+    clearTimeout(timerId);
+    timerStarter();
+  }
+};
+
+function convertMs(ms) {
+  // Number of milliseconds per unit of time
+  const second = 1000;
+  const minute = second * 60;
+  const hour = minute * 60;
+  const day = hour * 24; // Remaining days
+
+  const days = Math.floor(ms / day); // Remaining hours
+
+  const hours = Math.floor(ms % day / hour); // Remaining minutes
+
+  const minutes = Math.floor(ms % day % hour / minute); // Remaining seconds
+
+  const seconds = Math.floor(ms % day % hour % minute / second);
+  return {
+    days,
+    hours,
+    minutes,
+    seconds
+  };
+} /////////////////       Actions     ////////////////////////
+
 
 refs.startButton.setAttribute('disabled', true);
 refs.startButton.addEventListener('click', startButtonHandler);
