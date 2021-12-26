@@ -2719,11 +2719,10 @@ const flatpickrObject = (0, _flatpickr.default)("#datetime-picker", options); //
 const timerStarter = () => {
   const timerId = setInterval(() => {
     unformattingDate = selectedDatesCounter - Date.now();
-    console.log(convertMs(unformattingDate));
-    refs.dataDays.textContent = convertMs(unformattingDate).days;
-    refs.dataHours.textContent = convertMs(unformattingDate).hours;
-    refs.dataMinutes.textContent = convertMs(unformattingDate).minutes;
-    refs.dataSeconds.textContent = convertMs(unformattingDate).seconds;
+    refs.dataDays.textContent = addLeadingZero(convertMs(unformattingDate).days);
+    refs.dataHours.textContent = addLeadingZero(convertMs(unformattingDate).hours);
+    refs.dataMinutes.textContent = addLeadingZero(convertMs(unformattingDate).minutes);
+    refs.dataSeconds.textContent = addLeadingZero(convertMs(unformattingDate).seconds);
   }, 1000);
 };
 
@@ -2758,7 +2757,11 @@ function convertMs(ms) {
     minutes,
     seconds
   };
-} /////////////////       Actions     ////////////////////////
+}
+
+const addLeadingZero = value => {
+  return String(value).padStart(2, '0');
+}; /////////////////       Actions     ////////////////////////
 
 
 refs.startButton.setAttribute('disabled', true);
