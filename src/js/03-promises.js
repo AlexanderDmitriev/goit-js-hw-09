@@ -52,28 +52,62 @@ createPromise(2, 1500)
 Для отображения уведомлений пользователю вместо console.log() используй библиотеку notiflix.
 
  */
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 //================= Инициализация  =====================================//
 const refs = {
   delayField : document.querySelector('.form input'),
   stepField : document.querySelector('.form').children[1].firstElementChild,
   amountField : document.querySelector('.form').children[2].firstElementChild,
-  submitButton : document.querySelector('.form button')
+  submitButton : document.querySelector('.form button'),
+  form : document.querySelector('.form'),
 }
+
+
 //================= Методы  =====================================//
 function createPromise(position, delay) {
-  const shouldResolve = Math.random() > 0.3;
-  if (shouldResolve) {
-    // Fulfill
-  } else {
-    // Reject
-  }
+  const promise = new Promise((resolve, reject) =>{
+    setInterval(() => {
+      const shouldResolve = Math.random() > 0.3;
+      if (shouldResolve) {
+        resolve({position, delay});
+      } else {
+        reject({position, delay});
+      }
+    }, delay);
+
+  });
+  return promise;
 }
+
+
 
 const submitButtonHandler = (event) => {
   event.preventDefault();
-  console.log(refs.delayField.value);
-  console.log(refs.stepField.value);
-  console.log(refs.amountField.value);
+  let position=0;
+  let delay=Number(event.currentTarget.elements.delay.value);
+  const step = Number(event.currentTarget.elements.step.value);
+  let amount = Number(event.currentTarget.elements.amount.value);
+  
+  setInterval(()=>{
+     if(position==amount) return;
+    position +=1;
+    setTimeout(()=>{  
+      delay+=step;
+    });
+    createPromise(position, delay)
+      .then(({ position, delay }) => {
+        console.log(`✅ Fulfilled promise ${position} in ${delay}ms`);
+        Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
+      })
+      .catch(({ position, delay }) => {
+        console.log(`❌ Rejected promise ${position} in ${delay}ms`);
+        Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
+  }); 
+
+  },step);
+  
 }
+
+
 //================= Actions  =====================================//
-refs.submitButton.addEventListener('click' , submitButtonHandler);
+refs.form.addEventListener('submit' , submitButtonHandler);
