@@ -2687,7 +2687,8 @@ const refs = {
   dataDays: document.querySelector('span[data-days]'),
   dataHours: document.querySelector('span[data-hours]'),
   dataMinutes: document.querySelector('span[data-minutes]'),
-  dataSeconds: document.querySelector('span[data-seconds]')
+  dataSeconds: document.querySelector('span[data-seconds]'),
+  form: document.querySelector('.timer')
 };
 let selectedDatesCounter;
 let operationsFlag = false;
@@ -2718,11 +2719,13 @@ const flatpickrObject = (0, _flatpickr.default)("#datetime-picker", options); //
 
 const timerStarter = () => {
   const timerId = setInterval(() => {
-    unformattingDate = selectedDatesCounter - Date.now();
-    refs.dataDays.textContent = addLeadingZero(convertMs(unformattingDate).days);
-    refs.dataHours.textContent = addLeadingZero(convertMs(unformattingDate).hours);
-    refs.dataMinutes.textContent = addLeadingZero(convertMs(unformattingDate).minutes);
-    refs.dataSeconds.textContent = addLeadingZero(convertMs(unformattingDate).seconds);
+    if (selectedDatesCounter - Date.now() > 0) {
+      unformattingDate = selectedDatesCounter - Date.now();
+      refs.dataDays.textContent = addLeadingZero(convertMs(unformattingDate).days);
+      refs.dataHours.textContent = addLeadingZero(convertMs(unformattingDate).hours);
+      refs.dataMinutes.textContent = addLeadingZero(convertMs(unformattingDate).minutes);
+      refs.dataSeconds.textContent = addLeadingZero(convertMs(unformattingDate).seconds);
+    }
   }, 1000);
 };
 
@@ -2761,11 +2764,18 @@ function convertMs(ms) {
 
 const addLeadingZero = value => {
   return String(value).padStart(2, '0');
-}; /////////////////       Actions     ////////////////////////
+};
+/*   const formHandler = (event) =>{
+      if(unformattingDate==0) {
+        clearInterval(timerId);
+        console.log("STOP");
+      }
+  } */
+/////////////////       Actions     ////////////////////////
 
 
 refs.startButton.setAttribute('disabled', true);
-refs.startButton.addEventListener('click', startButtonHandler);
+refs.startButton.addEventListener('click', startButtonHandler); //refs.form.addEventListener('change', formHandler);
 },{"flatpickr":"../node_modules/flatpickr/dist/esm/index.js","flatpickr/dist/flatpickr.min.css":"../node_modules/flatpickr/dist/flatpickr.min.css"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -2794,7 +2804,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58407" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57908" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -121,7 +121,8 @@ const refs = {
     dataDays:document.querySelector('span[data-days]'),
     dataHours:document.querySelector('span[data-hours]'),
     dataMinutes:document.querySelector('span[data-minutes]'),
-    dataSeconds:document.querySelector('span[data-seconds]')
+    dataSeconds:document.querySelector('span[data-seconds]'),
+    form: document.querySelector('.timer')
 }
 let selectedDatesCounter;
 let operationsFlag=false;
@@ -156,16 +157,21 @@ const options = {
 
   const timerStarter = () => {
     const timerId = setInterval(() => {
-        unformattingDate = selectedDatesCounter-Date.now();
-        refs.dataDays.textContent=addLeadingZero(convertMs(unformattingDate).days);
-        refs.dataHours.textContent=addLeadingZero(convertMs(unformattingDate).hours);
-        refs.dataMinutes.textContent=addLeadingZero(convertMs(unformattingDate).minutes);
-        refs.dataSeconds.textContent=addLeadingZero(convertMs(unformattingDate).seconds);
+        if (selectedDatesCounter-Date.now()>0){
+          unformattingDate = selectedDatesCounter-Date.now();
+          refs.dataDays.textContent=addLeadingZero(convertMs(unformattingDate).days);
+          refs.dataHours.textContent=addLeadingZero(convertMs(unformattingDate).hours);
+          refs.dataMinutes.textContent=addLeadingZero(convertMs(unformattingDate).minutes);
+          refs.dataSeconds.textContent=addLeadingZero(convertMs(unformattingDate).seconds);
+        }
+        
+    
       }, 1000);
+      
   }
 
   const startButtonHandler = (event) => {
-      
+    
       if (!operationsFlag){
         operationsFlag=true;
         timerStarter();
@@ -203,6 +209,16 @@ const options = {
       return String(value).padStart(2,'0');
   }
 
+/*   const formHandler = (event) =>{
+      if(unformattingDate==0) {
+        clearInterval(timerId);
+        console.log("STOP");
+      }
+  } */
+
 /////////////////       Actions     ////////////////////////
 refs.startButton.setAttribute('disabled', true);
 refs.startButton.addEventListener('click', startButtonHandler);
+//refs.form.addEventListener('change', formHandler);
+
+
